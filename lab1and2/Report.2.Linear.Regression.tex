@@ -1,0 +1,48 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage[margin=1in]{geometry}
+
+\title{Labwork 2: Linear Regression}
+\author{Trung Tran Minh - 2540024}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+In this lab, I implement linear regression from scratch by using gradient descent.
+The input is a CSV file with two columns. The first column is $x$ and the second column is $y$.
+The model is:
+
+\[
+\hat{y} = w_1x + w_0
+\]
+
+The output of the program is $w_1$ and $w_0$. The dataset used in this lab is $lr.csv$
+
+\section{Result}
+
+I use learning rate: r = 4e-3
+
+
+\section{Effect of Different Learning Rates}
+
+I also try different learning rates. The result is:
+
+\[
+\begin{array}{c|c|c|c|c}
+r & w_1 & w_0 & loss & comment \\
+\hline
+0.00001 & 1.8969 & 11.4190 & 381.4041 & slow \\
+0.0001 & 1.3176 & 44.7973 & 21.6618 & better \\
+0.0004 & 1.2622 & 47.9869 & 18.9024 & good \\
+0.001 & -28.8146 & -0.4482 & 2313896.1725 & diverge
+\end{array}
+\]
+
+From this table, when the learning rate is too small, the model learns very slowly.
+When the learning rate is $0.0004$, the model converges well.
+When the learning rate is too large, like $0.001$, the loss becomes very large and the algorithm diverges.
+
+\end{document}
