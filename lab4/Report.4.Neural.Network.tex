@@ -1,0 +1,216 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  stringstyle=\ttfamily,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=8pt,
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2
+}
+
+\title{Labwork 4: Neural Network}
+\author{Trung Tran Minh - 2540024}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+In this lab, I implement a simple neural network from scratch.
+The network is initialized from a text file. The program also supports two ways to initialize weights and biases:
+random initialization and loading weights from another text file.
+
+The network supports feedforward. I also test the network with the XOR problem.
+
+\section{XOR Network Define}
+
+The input file \texttt{xor\_network.txt} stores the network structure.
+The file is:
+
+\[
+\begin{array}{c}
+3 \\
+2 \\
+2 \\
+1
+\end{array}
+\]
+
+The first line means the number of layers is 3.
+The next lines mean that the network has:
+
+\[
+2 \rightarrow 2 \rightarrow 1
+\]
+
+So the first layer has 2 input neurons, the hidden layer has 2 neurons, and the output layer has 1 neuron.
+
+\newpage
+\section{Implementation}
+
+Below is the code that I implemented for the two classes \texttt{Layer} and \texttt{NeuralNetwork}.
+The \texttt{Layer} class stores weights and biases of one layer.
+The \texttt{NeuralNetwork} class creates all layers, runs feedforward, and can load weights from a text file.
+
+\begin{lstlisting}[caption={Implementation of Layer and NeuralNetwork classes}]
+class Layer:
+  def __init__(self, input_size, output_size):
+    self.input_size = input_size
+    self.output_size = output_size
+    self.weights = []
+    self.biases = []
+
+    for i in range(output_size):
+      row = []
+
+      for j in range(input_size):
+        row.append(random.random())
+
+      self.weights.append(row)
+      self.biases.append(random.random())
+
+class NeuralNetwork:
+  def __init__(self, sizes):
+    self.sizes = sizes
+    self.layers = []
+
+    for i in range(len(sizes) - 1):
+      layer = Layer(sizes[i], sizes[i + 1])
+      self.layers.append(layer)
+
+  def sigmoid(self, x):
+    if x < -100:
+      return 0.0
+    if x > 100:
+      return 1.0
+
+    return 1 / (1 + math.exp(-x))
+
+  def feedforward(self, inputs):
+    a = inputs
+
+    for layer in self.layers:
+      next_a = []
+
+      for i in range(layer.output_size):
+        z = layer.biases[i]
+
+        for j in range(layer.input_size):
+          z = z + layer.weights[i][j] * a[j]
+
+        next_a.append(self.sigmoid(z))
+
+      a = next_a
+
+    return a
+
+  def load_weights(self, file_path):
+    with open(file_path, 'r') as file:
+      lines = file.readlines()
+
+    clean_lines = []
+
+    for line in lines:
+      line = line.strip()
+
+      if line != '':
+        clean_lines.append(line)
+
+    k = 0
+
+    for layer in self.layers:
+      for i in range(layer.output_size):
+        numbers = clean_lines[k].split(',')
+        numbers = [float(x) for x in numbers]
+
+        for j in range(layer.input_size):
+          layer.weights[i][j] = numbers[j]
+
+        layer.biases[i] = numbers[-1]
+        k = k + 1
+
+  def print_network(self):
+    for layer_index in range(len(self.layers)):
+      layer = self.layers[layer_index]
+      print('Layer', layer_index + 1)
+
+      for i in range(layer.output_size):
+        print(' neuron', i + 1, 'weights =', layer.weights[i], 'bias =', layer.biases[i])
+\end{lstlisting}
+
+\section{mplement Feedforward}
+
+For each neuron, I calculate:
+
+\[
+z = b + \sum_i w_i x_i
+\]
+
+Then I use sigmoid activation:
+
+\[
+a = \frac{1}{1 + e^{-z}}
+\]
+
+The output of one layer becomes the input of the next layer.
+This continues until the output layer.
+
+\section{XOR Network Experiment}
+
+For the XOR experiment, I use this network:
+
+\[
+2 \rightarrow 2 \rightarrow 1
+\]
+
+The weight file \texttt{xor\_weights.txt} is:
+
+\[
+\begin{array}{c}
+20, 20, -10 \\
+-20, -20, 30 \\
+20, 20, -30
+\end{array}
+\]
+
+The first two rows are for the hidden layer.
+The last row is for the output layer.
+The last value in each row is the bias.
+
+\section{Result}
+
+I run the network with four XOR inputs.
+The result is:
+
+\[
+\begin{array}{c|c|c|c}
+x_1 & x_2 & output & predicted \\
+\hline
+0 & 0 & 0.000045 & 0 \\
+0 & 1 & 0.999955 & 1 \\
+1 & 0 & 0.999955 & 1 \\
+1 & 1 & 0.000045 & 0
+\end{array}
+\]
+
+The predicted XOR result is:
+
+\[
+0, 1, 1, 0
+\]
+
+This is the correct output for XOR.
+\end{document}

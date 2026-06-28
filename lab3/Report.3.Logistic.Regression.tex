@@ -1,0 +1,78 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage[margin=1in]{geometry}
+
+\title{Labwork 3: Logistic Regression}
+\author{Trung Tran Minh - 2540024}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+In this lab, I implement logistic regression from scratch by using gradient descent.
+The input is a CSV file with three columns. The first two columns are input features and the last column is the label.
+In this dataset $Loan.csv$ within features are Experience and Salary.
+
+\section{Result}
+
+I use learning rate:
+
+\[
+r = 0.1
+\]
+
+and run gradient descent for 10000 iterations.
+The final result is:
+
+\[
+w_0 = -12.368200
+\]
+
+\[
+w_1 = 4.249180
+\]
+
+\[
+w_2 = 1.147938
+\]
+
+The final loss is:
+
+\[
+J = 0.210407
+\]
+
+The accuracy on this small dataset is:
+
+\[
+Accuracy = 0.8947
+\]
+
+So the logistic regression model is:
+
+\[
+\hat{y} = \frac{1}{1 + e^{-(w_0 + w_1 + w_2)}}
+\]
+
+\section{Effect of Different Learning Rates}
+
+I also try different learning rates. The result is:
+
+\[
+\begin{array}{c|c|c|c|c|c}
+r & w_0 & w_1 & w_2 & loss & accuracy \\
+\hline
+0.001 & -0.3310 & 1.2495 & -0.1400 & 0.4734 & 0.7368 \\
+0.01 & -3.6249 & 2.2565 & 0.1946 & 0.3313 & 0.7895 \\
+0.1 & -12.3682 & 4.2492 & 1.1479 & 0.2104 & 0.8947 \\
+1.0 & -28.6238 & 8.5510 & 3.1459 & 0.3233 & 0.9474
+\end{array}
+\]
+
+From this table, a very small learning rate learns slowly.
+A learning rate of $0.1$ gives a good result for this dataset.
+When the learning rate is too large, the result can be unstable and the loss does not always become smaller.
+
+\end{document}
